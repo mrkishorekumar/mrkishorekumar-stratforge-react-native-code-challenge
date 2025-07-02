@@ -1,58 +1,61 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
-import ProductLandingPage from '../screens/ProductLandingPage';
-import MyProfile from '../screens/MyProfile';
-import MyCart from '../screens/MyCart';
-import Wishlist from '../screens/Wishlist';
 import { Text } from 'react-native';
+import RoutingList, { RoutingNameAndTitle } from './RoutingList';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
 
 const Tab = createBottomTabNavigator();
 
 export default function Routes() {
+
+    const wishlistCount = useSelector((state: RootState) => state.product.wishlist.length);
+    const cartCount = useSelector((state: RootState) => state.product.cart.length);
+
     return (
         <NavigationContainer>
             <Tab.Navigator
-                initialRouteName="ProductLandingPage"
+                initialRouteName={RoutingNameAndTitle.PLP.name}
                 screenOptions={({ route }) => ({
                     headerShown: true,
                     tabBarActiveTintColor: 'black',
                     tabBarInactiveTintColor: 'gray',
                     tabBarIcon: ({ focused, color, size }) => {
                         let icon;
-                        if (route.name === 'ProductLandingPage') {
+                        if (route.name === RoutingNameAndTitle.PLP.name) {
                             icon = '👔';
-                        } else if (route.name === 'MyProfile') {
-                            icon = '🧔🏻'; 
-                        } else if (route.name === 'MyCart') {
-                            icon = '🛒'; 
-                        } else if (route.name === 'Wishlist') {
+                        } else if (route.name === RoutingNameAndTitle.MYPROFILE.name) {
+                            icon = '🧔🏻';
+                        } else if (route.name === RoutingNameAndTitle.CART.name) {
+                            icon = '🛒';
+                        } else if (route.name === RoutingNameAndTitle.WISHLIST.name) {
                             icon = '❤️';
                         }
-
                         return <Text style={{ fontSize: size }}>{icon}</Text>;
                     },
                 })}
             >
-            <Tab.Screen
-                name="ProductLandingPage"
-                component={ProductLandingPage}
-                options={{ title: 'Products' }}
-            />
-            <Tab.Screen
-                name="MyProfile"
-                component={MyProfile}
-                options={{ title: 'Profile' }}
-            />
-            <Tab.Screen
-                name="Wishlist"
-                component={Wishlist}
-                options={{ title: 'Wishlist' }}
-            />
-            <Tab.Screen
-                name="MyCart"
-                component={MyCart}
-                options={{ title: 'Cart' }}
-            />
+                {
+                    RoutingList.map((route) => {
+                        let options = route.options;
+                        if (route.name === RoutingNameAndTitle.WISHLIST.name) {
+                            options = {
+                                ...options,
+                                tabBarBadgeStyle: { backgroundColor: 'black', color: 'white' },
+                                tabBarBadge: wishlistCount > 0 ? wishlistCount : undefined,
+                            };
+                        } else if (route.name === RoutingNameAndTitle.CART.name) {
+                            options = {
+                                ...options,
+                                tabBarBadgeStyle: { backgroundColor: 'black', color: 'white' },
+                                tabBarBadge: cartCount > 0 ? cartCount : undefined,
+                            };
+                        }
+                        return (
+                            <Tab.Screen name={route.name} component={route.component} options={options} key={route.id} />
+                        )
+                    })
+                }
             </Tab.Navigator>
         </NavigationContainer>
     )
