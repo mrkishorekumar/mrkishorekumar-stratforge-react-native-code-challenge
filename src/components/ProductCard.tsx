@@ -1,10 +1,10 @@
 import React, { memo, useCallback, useMemo } from 'react';
 import { Pressable, StyleSheet, Text, View, Dimensions } from 'react-native';
-import FastImage from '@d11/react-native-fast-image';
 import { Product } from '../interface/Api';
 import { RootState } from '../store';
 import { useDispatch, useSelector, shallowEqual } from 'react-redux';
 import { addToCart, addToWishlist, removeFromCart, removeFromWishlist } from '../store/product';
+import CustomImage from './CustomImage';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const CARD_MARGIN = 8;
@@ -37,10 +37,9 @@ function ProductCard({ info }: { info: Product }) {
 
     return (
         <View style={styles.card}>
-            <FastImage
+            <CustomImage
                 source={{ uri: info.thumbnail }}
                 style={styles.image}
-                fallback
             />
             <Text style={styles.title} numberOfLines={1}>
                 {info.title}

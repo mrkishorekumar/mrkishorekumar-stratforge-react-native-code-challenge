@@ -26,6 +26,10 @@ export default function MyCart() {
           <ProductCard info={item} />
         )}
       />
+      <View style={{ padding: 16 }}>
+        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Total Items: {cart.length}</Text>
+        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Total Price: ₹{cart.reduce((total, item) => total + item.price, 0).toFixed(2)}</Text>
+      </View>
     </View>
   )
 }
